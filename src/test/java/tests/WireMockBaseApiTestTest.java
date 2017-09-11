@@ -17,8 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     private static ApiTestKitProperties properties = ApiTestKitProperties.create();
-
-
     private static int WIREMOCK_PORT = properties.getInt("wiremock.port");
     private static String WIREMOCK_HOST = properties.getString("wiremock.host");
     private String wiremockUrl = String.format("http://%s:%s", WIREMOCK_HOST,WIREMOCK_PORT);

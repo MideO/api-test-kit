@@ -17,9 +17,6 @@ public class ApiTestKitProperties {
         return INSTANCE;
     }
 
-
-
-
     private ApiTestKitProperties(String propertyFileName) {
         load(propertyFileName);
     }
@@ -46,7 +43,6 @@ public class ApiTestKitProperties {
     public Object get(String name, Object defaultValue) {
         return config.getProperty(name, defaultValue.toString());
     }
-
 
     public Object get(String name) {
         return config.getProperty(name, null);

@@ -26,7 +26,7 @@ object AnotherFakeScenario extends TestScenario {
 
 class FakePerformanceTest
   extends LocalPerformanceTest{
-  AsciiArt.draw("TestLibs")
+  AsciiArt.draw("ApiTestKit")
 
   override val httpProtocol: HttpProtocol = http.baseURL("http://localhost").disableWarmUp.build
   override def injection: InjectionStep = atOnceUsers(1)

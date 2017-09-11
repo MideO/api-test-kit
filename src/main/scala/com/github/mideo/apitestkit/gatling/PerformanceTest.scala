@@ -52,9 +52,7 @@ trait LocalPerformanceTest
 
 }
 
-object ScalaStubBuilder extends StubBuilder {
-  disableRequestJournal()
-}
+object ScalaStubBuilder extends StubBuilder { disableRequestJournal() }
 
 sealed trait TestApplication extends Simulation {
   protected var properties = new Properties
