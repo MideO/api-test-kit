@@ -4,11 +4,14 @@
 
 Test library for quick bootstrapping API Acceptance/Integration and Performance tests base classes backed with JUnit, Wiremock, Atam4J, and Gatling. 
 
+For more information on test tools see:
+ 
+* [JUnit](http://junit.org)
+* [Rest-Assured](http://rest-assured.io/)
+* [Wiremock](http://wiremock.org)
+* [Atam4J](https://github.com/atam4j/atam4j)
+* [Gatling](http://gatling.io)
 
-```sh
-$ cd api-test-kit
-> sbt clean test
-```
 
 #### Java Utilities
 * RestAssuredSpecFactory - Create rest-assured request spec with all wapi required headers
