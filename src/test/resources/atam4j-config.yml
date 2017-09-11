@@ -1,0 +1,21 @@
+server:
+  type: simple
+  applicationContextPath: /atam
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: ${port:-4567}
+
+  requestLog:
+    appenders: []
+
+logging:
+  level: ERROR
+  loggers:
+    io.dropwizard: ERROR
+    me.atam.atam4j: DEBUG
+  appenders:
+    - type: console
+      logFormat: '[%d{ISO8601}] %-5level [%thread] %logger{15} - %msg%n'
+
+periodInSeconds: ${periodInSeconds:-120}
