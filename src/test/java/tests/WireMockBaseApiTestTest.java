@@ -12,6 +12,7 @@ import com.github.mideo.apitestkit.RestAssuredSpecFactory;
 import com.github.mideo.apitestkit.WireMockBasedApiTest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
@@ -24,17 +25,15 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     private RequestSpecification requestSpecification = RestAssuredSpecFactory.givenARequestSpecification().baseUri(wiremockUrl);
     private String payload = JsonParser.serialize(ImmutableMap.of("name", "testApi"));
 
-    private boolean propertiesLoaded;
-    private boolean appStarted;
-
     public WireMockBaseApiTestTest() throws JsonProcessingException {
     }
 
     @Test
     public void properties_ShouldBeInitialised() throws Exception {
         //expect
-        assertTrue(appStarted);
-        assertTrue(propertiesLoaded);
+        assertEquals("localhost",properties.getString("wiremock.host"));
+        assertEquals(9999,properties.getInt("wiremock.port"));
+        assertTrue(applicationStarted);
     }
 
 
@@ -100,7 +99,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
 
     @Override
     protected void startApplication() {
-        appStarted = true;
+
     }
 
     @Override
@@ -110,6 +109,6 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
 
     @Override
     protected void loadTestApplicationProperties() {
-        propertiesLoaded = true;
+
     }
 }

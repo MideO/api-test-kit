@@ -8,5 +8,5 @@ public abstract class TestApplication {
     protected abstract void stopApplication();
     protected abstract void loadTestApplicationProperties();
 
-    static boolean applicationStarted = false;
+    protected static boolean applicationStarted = false;
 }
