@@ -1,6 +1,8 @@
 package tests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.tomakehurst.wiremock.http.RequestMethod;
+import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
 import com.google.common.collect.ImmutableMap;
 import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
@@ -12,6 +14,8 @@ import com.github.mideo.apitestkit.RestAssuredSpecFactory;
 import com.github.mideo.apitestkit.WireMockBasedApiTest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -38,9 +42,29 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
 
 
     @Test
+    public void itShouldRecordProxyMappings() throws Exception {
+        //Given
+        stubBuilder.proxyVia("https://example.com", 443);
+
+        //When
+        stubBuilder.startRecording().startRecording();
+        requestSpecification.when().get("/blueRed").then().statusCode(404);
+        SnapshotRecordResult result = stubBuilder.stopRecording();
+
+
+        //Then
+        assertEquals(1, result.getStubMappings().size());
+        assertEquals("/blueRed", result.getStubMappings().get(0).getRequest().getUrl());
+        assertEquals(RequestMethod.fromString("GET"), result.getStubMappings().get(0).getRequest().getMethod());
+
+    }
+
+
+
+    @Test
     public void givenWiremockServerResponseWithPathAndRequestAndBodyAndStatusCode_ShouldSetWireMockMapping() throws Exception {
         //When
-        stubServer.givenWiremockServerResponse(get("/api"), payload, 500);
+        stubBuilder.givenWiremockServerResponse(get("/api"), payload, 500);
 
         //Then
         requestSpecification.when()
@@ -53,7 +77,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void givenWiremockServerResponseWithPathAndRequestAndBody_ShouldSetWireMockMapping() throws Exception {
         //When
-        stubServer.givenWiremockServerResponse(get("/api"), payload);
+        stubBuilder.givenWiremockServerResponse(get("/api"), payload);
 
         //Then
         requestSpecification.when()
@@ -66,7 +90,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void givenWiremockServerResponseWithPathAndRequest_ShouldSetWireMockMapping() throws Exception {
         //When
-        stubServer.givenWiremockServerResponse(get("/api"));
+        stubBuilder.givenWiremockServerResponse(get("/api"));
 
         //Then
         requestSpecification.when()
@@ -80,7 +104,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void givenWiremockWillReturnCode_ShouldSetWireMockMapping() throws Exception {
         //When
-        stubServer.givenWiremockWillReturnCode(202);
+        stubBuilder.givenWiremockWillReturnCode(202);
 
         //Then
         requestSpecification.when()
@@ -95,6 +119,39 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
                 .delete("/foo").then()
                 .statusCode(202);
     }
+
+    @Test
+    public void isShouldSupportChainedRequestMocks() throws Exception {
+        //When
+        stubBuilder.givenWiremockWillReturnCode(202)
+                .givenWiremockServerResponse(post("/api"), payload)
+                .givenWiremockServerResponse(put("/api"), "Internal Server Error", 500);;
+
+        //Then
+        requestSpecification.when()
+                .put("/bar").then()
+                .statusCode(202);
+
+        requestSpecification.when()
+                .get("/foo").then()
+                .statusCode(202);
+
+        requestSpecification.when()
+                .delete("/foo").then()
+                .statusCode(202);
+
+        requestSpecification.when()
+                .post("/api").then()
+                .statusCode(200)
+                .body(Matchers.is(payload));
+
+        requestSpecification.when()
+                .put("/api").then()
+                .statusCode(500)
+                .body(Matchers.is("Internal Server Error"));
+
+    }
+
 
 
     @Override

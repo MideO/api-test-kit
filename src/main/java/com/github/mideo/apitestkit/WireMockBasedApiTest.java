@@ -1,17 +1,19 @@
 package com.github.mideo.apitestkit;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.Before;
 
 
 
 public abstract class WireMockBasedApiTest extends ApiTest {
 
-    protected StubBuilder stubServer = new StubBuilder();
+    protected StubBuilder stubBuilder = new StubBuilder();
     @Before
     public void setupWireMock() {
         setupApi();
-        stubServer.startWireMock();
-        StubBuilder.wireMockServer.resetMappings();
-        StubBuilder.wireMockServer.resetRequests();
-        StubBuilder.wireMockServer.resetScenarios();
+        stubBuilder.startWireMock();
+        WireMockServer mockServer = stubBuilder.getWireMockServer();
+        mockServer.resetMappings();
+        mockServer.resetRequests();
+        mockServer.resetScenarios();
     }
 }

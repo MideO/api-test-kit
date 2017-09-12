@@ -22,7 +22,7 @@ lazy val `apktestkit` = (project in file("."))
 
     fork in run := true,
 
-    testOptions += Tests.Argument(TestFrameworks.JUnit),
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-a"),
 
     javaSource in Compile := baseDirectory.value / "src/main/java",
 
