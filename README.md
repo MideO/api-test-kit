@@ -122,8 +122,24 @@ class ExampleWiremockBasedApiTest extends WireMockBasedApiTest {
  ```java
  public class Example {
           public static void main(String[] args) throws Exception {
-              StubBuilder stubServer = new StubBuilder();
+              StubBuilder stubServer = new StubBuilder().startWireMock();
+              stubServer.startWireMock();
+              
+              //stubbing
               stubServer.givenWiremockWillReturnCode(200);
+              
+              //set wiremock as proxy and record conversation with a third party service for future use
+              StubRecorder recorder = stubBuilder.recorder("https://example.com", 443).record(
+                              () -> requestSpecification
+                                      .when()
+                                      .get("/blueRed")
+                                      .then()
+                                      .statusCode(404)
+                      );
+              
+                      
+              List<StubMapping> mappings = recorder.saveRecording().then().getRecording();
+              
       }
   }
 
