@@ -3,17 +3,24 @@ package com.github.mideo.apitestkit;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public class StubBuilder {
 
-    private ApiTestKitProperties properties = ApiTestKitProperties.create();
-    private int WIREMOCK_PORT = properties.getInt("wiremock.port");
-    private String WIREMOCK_HOST = properties.getString("wiremock.host");
-    private WireMockConfiguration options = new WireMockConfiguration().port(WIREMOCK_PORT).bindAddress(WIREMOCK_HOST);
+    private int WIREMOCK_PORT;
+    private String WIREMOCK_HOST;
+    private String WIREMOCK_ROOT_DIRECTORY;
+    private WireMockConfiguration options;
     private static WireMockServer wireMockServer;
+
+    public StubBuilder() {
+        ApiTestKitProperties properties = ApiTestKitProperties.create();
+        WIREMOCK_PORT = properties.getInt("wiremock.port");
+        WIREMOCK_HOST = properties.getString("wiremock.host");
+        WIREMOCK_ROOT_DIRECTORY = properties.getString("wiremock.root.directory", "src/test/resources");
+        options = new WireMockConfiguration().port(WIREMOCK_PORT).bindAddress(WIREMOCK_HOST).withRootDirectory(WIREMOCK_ROOT_DIRECTORY);
+    }
 
     public WireMockServer getWireMockServer() {
         return wireMockServer;
@@ -22,20 +29,6 @@ public class StubBuilder {
     public StubBuilder disableRequestJournal() {
         options.disableRequestJournal();
         wireMockServer = new WireMockServer(options);
-        return this;
-    }
-
-    public StubBuilder proxyVia(String host, int port) {
-        options.proxyVia(host, port);
-
-
-        if (!wireMockIsRunning()) {
-            wireMockServer = new WireMockServer(options);
-        }else{
-
-            wireMockServer.startRecording(options.proxyVia().toString());
-
-        }
         return this;
     }
 
@@ -82,16 +75,8 @@ public class StubBuilder {
         return this;
     }
 
-    public StubBuilder startRecording() {
-        wireMockServer.startRecording(options.proxyVia().toString());
-        return this;
+    public StubRecorder recorder(String host, int port) {
+        return new StubRecorder(wireMockServer, options.proxyVia(host, port));
     }
-
-
-    public SnapshotRecordResult stopRecording() {
-        options.filesRoot().child("mappings").createIfNecessary();
-        return wireMockServer.stopRecording();
-    }
-
 
 }

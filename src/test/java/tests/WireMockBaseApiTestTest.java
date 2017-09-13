@@ -1,17 +1,15 @@
 package tests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.mideo.apitestkit.*;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
-import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.google.common.collect.ImmutableMap;
 import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import com.github.mideo.apitestkit.ApiTestKitProperties;
-import com.github.mideo.apitestkit.JsonParser;
-import com.github.mideo.apitestkit.RestAssuredSpecFactory;
-import com.github.mideo.apitestkit.WireMockBasedApiTest;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -24,7 +22,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     private static ApiTestKitProperties properties = ApiTestKitProperties.create();
     private static int WIREMOCK_PORT = properties.getInt("wiremock.port");
     private static String WIREMOCK_HOST = properties.getString("wiremock.host");
-    private String wiremockUrl = String.format("http://%s:%s", WIREMOCK_HOST,WIREMOCK_PORT);
+    private String wiremockUrl = String.format("http://%s:%s", WIREMOCK_HOST, WIREMOCK_PORT);
 
     private RequestSpecification requestSpecification = RestAssuredSpecFactory.givenARequestSpecification().baseUri(wiremockUrl);
     private String payload = JsonParser.serialize(ImmutableMap.of("name", "testApi"));
@@ -35,8 +33,8 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void properties_ShouldBeInitialised() throws Exception {
         //expect
-        assertEquals("localhost",properties.getString("wiremock.host"));
-        assertEquals(9999,properties.getInt("wiremock.port"));
+        assertEquals("localhost", properties.getString("wiremock.host"));
+        assertEquals(9999, properties.getInt("wiremock.port"));
         assertTrue(applicationStarted);
     }
 
@@ -44,21 +42,26 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void itShouldRecordProxyMappings() throws Exception {
         //Given
-        stubBuilder.proxyVia("https://example.com", 443);
+        StubRecorder recorder = stubBuilder.recorder("https://example.com", 443).record(
+                () -> requestSpecification
+                        .when()
+                        .get("/blueRed")
+                        .then()
+                        .statusCode(404)
+        );
 
         //When
-        stubBuilder.startRecording().startRecording();
-        requestSpecification.when().get("/blueRed").then().statusCode(404);
-        SnapshotRecordResult result = stubBuilder.stopRecording();
-
+        List<StubMapping> mappings = recorder
+                .saveRecording()
+                .then()
+                .getRecording();
 
         //Then
-        assertEquals(1, result.getStubMappings().size());
-        assertEquals("/blueRed", result.getStubMappings().get(0).getRequest().getUrl());
-        assertEquals(RequestMethod.fromString("GET"), result.getStubMappings().get(0).getRequest().getMethod());
+        assertEquals(1, mappings.size());
+        assertEquals("/blueRed", mappings.get(0).getRequest().getUrl());
+        assertEquals(RequestMethod.fromString("GET"), mappings.get(0).getRequest().getMethod());
 
     }
-
 
 
     @Test
@@ -99,8 +102,6 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     }
 
 
-
-
     @Test
     public void givenWiremockWillReturnCode_ShouldSetWireMockMapping() throws Exception {
         //When
@@ -125,7 +126,8 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
         //When
         stubBuilder.givenWiremockWillReturnCode(202)
                 .givenWiremockServerResponse(post("/api"), payload)
-                .givenWiremockServerResponse(put("/api"), "Internal Server Error", 500);;
+                .givenWiremockServerResponse(put("/api"), "Internal Server Error", 500);
+        ;
 
         //Then
         requestSpecification.when()
@@ -151,7 +153,6 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
                 .body(Matchers.is("Internal Server Error"));
 
     }
-
 
 
     @Override
