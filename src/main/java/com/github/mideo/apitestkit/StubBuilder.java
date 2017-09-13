@@ -5,21 +5,19 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 public class StubBuilder {
 
-    private int WIREMOCK_PORT;
-    private String WIREMOCK_HOST;
-    private String WIREMOCK_ROOT_DIRECTORY;
     private WireMockConfiguration options;
     private static WireMockServer wireMockServer;
 
     public StubBuilder() {
         ApiTestKitProperties properties = ApiTestKitProperties.create();
-        WIREMOCK_PORT = properties.getInt("wiremock.port");
-        WIREMOCK_HOST = properties.getString("wiremock.host");
-        WIREMOCK_ROOT_DIRECTORY = properties.getString("wiremock.root.directory", "src/test/resources");
-        options = new WireMockConfiguration().port(WIREMOCK_PORT).bindAddress(WIREMOCK_HOST).withRootDirectory(WIREMOCK_ROOT_DIRECTORY);
+        int WIREMOCK_PORT = properties.getInt("wiremock.port");
+        String WIREMOCK_HOST = properties.getString("wiremock.host");
+        String WIREMOCK_ROOT_DIRECTORY = properties.getString("wiremock.root.directory", "src/test/resources");
+        options = wireMockConfig().port(WIREMOCK_PORT).bindAddress(WIREMOCK_HOST).withRootDirectory(WIREMOCK_ROOT_DIRECTORY);
     }
 
     public WireMockServer getWireMockServer() {

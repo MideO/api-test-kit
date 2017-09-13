@@ -22,7 +22,7 @@ lazy val `apktestkit` = (project in file("."))
 
     fork in run := true,
 
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-a"),
+    testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-reports"),
 
     javaSource in Compile := baseDirectory.value / "src/main/java",
 
@@ -60,12 +60,13 @@ libraryDependencies ++= Seq(
   "io.rest-assured" % "json-schema-validator" % RestAssuredVersion,
 
   // Wiremock
-  "com.github.tomakehurst" % "wiremock" % "2.7.1",
+  "com.github.tomakehurst" % "wiremock" % "2.8.0" ,
 
   "com.novocode" % "junit-interface" % "0.10" % "test",
   "junit" % "junit" % "4.12",
   "org.hamcrest" % "hamcrest-junit" % "2.0.0.0",
   "org.scalatest" % "scalatest_2.11" % "3.0.3" % "test",
+  "org.pegdown" % "pegdown" % "1.6.0" % "test",
   "org.mockito" % "mockito-all" % "1.9.5" % "test"
 )
 
