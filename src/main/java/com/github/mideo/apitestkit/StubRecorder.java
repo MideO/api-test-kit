@@ -1,7 +1,9 @@
 package com.github.mideo.apitestkit;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import java.io.IOException;
@@ -51,10 +53,14 @@ public class StubRecorder {
                 mapping -> {
                     try {
                         String mappingsDirectory = options.proxyVia(options.proxyVia()).filesRoot().getPath() + "/mappings/";
-                        String fileName = mapping.getName() + "-" + mapping.getId() + ".json";
-                        byte[] data = mapping.toString().getBytes();
+                        String filesDirectory = options.proxyVia(options.proxyVia()).filesRoot().getPath() + "/__files/";
+                        String fileName = mapping.getName() + "-" + mapping.getId();
+                        ResponseDefinition resp = mapping.getResponse();
+                        mapping.setResponse(ResponseDefinitionBuilder.responseDefinition().withStatus(resp.getStatus()).withBodyFile(fileName).withHeaders(resp.getHeaders()).build());
+                        byte[] mappingBytes = mapping.toString().getBytes();
 
-                        Files.write(Paths.get(mappingsDirectory + fileName), data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                        Files.write(Paths.get(filesDirectory + fileName), resp.getByteBody(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                        Files.write(Paths.get(mappingsDirectory + fileName+ ".json"), mappingBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -66,20 +72,22 @@ public class StubRecorder {
 
     private void startRecording() {
         String root = options.proxyVia(options.proxyVia()).filesRoot().getPath();
-        try {
-            Files.createDirectories(Paths.get(root));
-            Files.createDirectories(Paths.get(root + "/mappings"));
-            Files.createDirectories(Paths.get(root + "/__files"));
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        createRecordingDirectoriesIfNotExist(root);
         wireMockServer.startRecording(options.proxyVia().toString());
 
     }
 
     private void stopRecording() {
         recording.addAll(wireMockServer.stopRecording().getStubMappings());
+    }
+
+    private void createRecordingDirectoriesIfNotExist(String root) {
+        try {
+            if(Files.notExists(Paths.get(root))) Files.createDirectories(Paths.get(root));
+            if(Files.notExists(Paths.get(root+ "/mappings"))) Files.createDirectories(Paths.get(root+ "/mappings"));
+            if(Files.notExists(Paths.get(root+ "/__files"))) Files.createDirectories(Paths.get(root+ "/__files"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
