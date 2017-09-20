@@ -8,17 +8,18 @@ import com.google.common.collect.ImmutableMap;
 import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.scalatest.junit.JUnitSuite;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
-public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
+public class WireMockBaseApiTestSpec extends JUnitSuite {
+
+    private FugazziWireMockBasedApiTest fugazziWireMockBasedApiTest;
     private static ApiTestKitProperties properties = ApiTestKitProperties.create();
     private static int WIREMOCK_PORT = properties.getInt("wiremock.port");
     private static String WIREMOCK_HOST = properties.getString("wiremock.host");
@@ -27,7 +28,9 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     private RequestSpecification requestSpecification = RestAssuredSpecFactory.givenARequestSpecification().baseUri(wiremockUrl);
     private String payload = JsonParser.serialize(ImmutableMap.of("name", "testApi"));
 
-    public WireMockBaseApiTestTest() throws JsonProcessingException {
+    public WireMockBaseApiTestSpec() throws JsonProcessingException {
+        fugazziWireMockBasedApiTest = new FugazziWireMockBasedApiTest();
+        fugazziWireMockBasedApiTest.setupWireMock();
     }
 
     @Test
@@ -35,14 +38,14 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
         //expect
         assertEquals("localhost", properties.getString("wiremock.host"));
         assertEquals(9999, properties.getInt("wiremock.port"));
-        assertTrue(applicationStarted);
+        assertTrue(fugazziWireMockBasedApiTest.isApplicationStarted());
     }
 
 
     @Test
     public void itShouldRecordProxyMappings() throws Exception {
         //Given
-        StubRecorder recorder = stubBuilder.recorder("https://example.com", 443).record(
+        StubRecorder recorder = fugazziWireMockBasedApiTest.getStubBuilder().recorder("https://example.com", 443).record(
                 () -> requestSpecification
                         .when()
                         .get("/blueRed")
@@ -67,7 +70,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void givenWiremockServerResponseWithPathAndRequestAndBodyAndStatusCode_ShouldSetWireMockMapping() throws Exception {
         //When
-        stubBuilder.givenWiremockServerResponse(get("/api"), payload, 500);
+        fugazziWireMockBasedApiTest.getStubBuilder().givenWiremockServerResponse(get("/api"), payload, 500);
 
         //Then
         requestSpecification.when()
@@ -80,7 +83,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void givenWiremockServerResponseWithPathAndRequestAndBody_ShouldSetWireMockMapping() throws Exception {
         //When
-        stubBuilder.givenWiremockServerResponse(get("/api"), payload);
+        fugazziWireMockBasedApiTest.getStubBuilder().givenWiremockServerResponse(get("/api"), payload);
 
         //Then
         requestSpecification.when()
@@ -93,7 +96,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void givenWiremockServerResponseWithPathAndRequest_ShouldSetWireMockMapping() throws Exception {
         //When
-        stubBuilder.givenWiremockServerResponse(get("/api"));
+        fugazziWireMockBasedApiTest.getStubBuilder().givenWiremockServerResponse(get("/api"));
 
         //Then
         requestSpecification.when()
@@ -105,7 +108,7 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void givenWiremockWillReturnCode_ShouldSetWireMockMapping() throws Exception {
         //When
-        stubBuilder.givenWiremockWillReturnCode(202);
+        fugazziWireMockBasedApiTest.getStubBuilder().givenWiremockWillReturnCode(202);
 
         //Then
         requestSpecification.when()
@@ -124,10 +127,10 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
     @Test
     public void isShouldSupportChainedRequestMocks() throws Exception {
         //When
-        stubBuilder.givenWiremockWillReturnCode(202)
+        fugazziWireMockBasedApiTest.getStubBuilder().givenWiremockWillReturnCode(202)
                 .givenWiremockServerResponse(post("/api"), payload)
                 .givenWiremockServerResponse(put("/api"), "Internal Server Error", 500);
-        ;
+
 
         //Then
         requestSpecification.when()
@@ -154,19 +157,27 @@ public class WireMockBaseApiTestTest extends WireMockBasedApiTest {
 
     }
 
+    static class FugazziWireMockBasedApiTest extends WireMockBasedApiTest {
+        StubBuilder getStubBuilder() {
+            return stubBuilder;
+        }
+        boolean isApplicationStarted(){
+            return applicationStarted;
+        }
 
-    @Override
-    protected void startApplication() {
+        @Override
+        protected void startApplication() {
 
-    }
+        }
+        @Override
+        protected void stopApplication() {
 
-    @Override
-    protected void stopApplication() {
+        }
 
-    }
+        @Override
+        protected void loadTestApplicationProperties() {
 
-    @Override
-    protected void loadTestApplicationProperties() {
+        }
 
     }
 }

@@ -1,11 +1,12 @@
-package tests.atam;
+package tests.monitoring;
 
 import com.github.mideo.apitestkit.monitoring.Atam4jMainApplication;
 import org.junit.Test;
+import org.scalatest.junit.JUnitSuite;
 
 import static org.junit.Assert.assertEquals;
 
-public class Atam4jMainApplicationTest {
+public class Atam4jMainApplicationTest extends JUnitSuite {
     @Test
     public void setAtam4JConfigFile() throws Exception {
         //When

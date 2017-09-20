@@ -2,8 +2,9 @@ package tests;
 
 
 import com.github.mideo.apitestkit.JsonParser;
-import jersey.repackaged.com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
+import org.scalatest.junit.JUnitSuite;
 
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
-public class JsonParserTest {
+public class JsonParserTest extends JUnitSuite {
     private static String givenString = "{\"abc\":\"123\"}";
     private static Map<String, String> expected = ImmutableMap.of("abc", "123");
     private Dummy d = new Dummy();

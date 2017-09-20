@@ -3,6 +3,7 @@ package com.github.mideo.apitestkit;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+
 import static io.restassured.RestAssured.given;
 
 

@@ -28,18 +28,6 @@ object Common {
 
   fork in run := true
 
-  testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-reports")
-
-  javaSource in Compile := baseDirectory.value / "src/main/java"
-
-  javaSource in Test := baseDirectory.value / "src/test/java"
-
-  resourceDirectory in Compile := baseDirectory.value / "src/main/resources"
-
-  resourceDirectory in Test := baseDirectory.value / "src/test/resources"
-
-
-
   releaseVersionBump := sbtrelease.Version.Bump.Next
 
   releaseIgnoreUntrackedFiles := true
@@ -75,16 +63,6 @@ object Common {
     autoScalaLibrary := false,
 
     fork in run := true,
-
-    testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-reports"),
-
-    javaSource in Compile := baseDirectory.value / "src/main/java",
-
-    javaSource in Test := baseDirectory.value / "src/test/java",
-
-    resourceDirectory in Compile := baseDirectory.value / "src/main/resources",
-
-    resourceDirectory in Test := baseDirectory.value / "src/test/resources",
 
     pomIncludeRepository := { _ => false },
 

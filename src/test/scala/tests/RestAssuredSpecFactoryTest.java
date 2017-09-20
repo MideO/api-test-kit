@@ -3,14 +3,13 @@ package tests;
 import com.github.mideo.apitestkit.RestAssuredSpecFactory;
 import io.restassured.RestAssured;
 import io.restassured.internal.RequestSpecificationImpl;
-import me.atam.atam4j.Monitor;
 import org.junit.Test;
+import org.scalatest.junit.JUnitSuite;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@Monitor
-public class RestAssuredSpecFactoryTest {
+public class RestAssuredSpecFactoryTest extends JUnitSuite {
     @Test
     public void useRelaxedHTTPSValidation_ShouldSetRestAssuredToUseRelaxedHTTPSValidation() throws Exception {
         //When
