@@ -45,7 +45,7 @@ public class WireMockBaseApiTestSpec extends JUnitSuite {
     @Test
     public void itShouldRecordProxyMappings() throws Exception {
         //Given
-        StubRecorder recorder = fugazziWireMockBasedApiTest.getStubBuilder().recorder("https://example.com", 443).record(
+        StubRecorder recorder = fugazziWireMockBasedApiTest.getStubBuilder().recorder("https://google.com/bin", 443).record(
                 () -> requestSpecification
                         .when()
                         .get("/blueRed")
