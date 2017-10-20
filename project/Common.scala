@@ -1,7 +1,7 @@
 import com.typesafe.sbt.SbtPgp.{PgpKeys, pgpPassphrase}
 import sbt.Keys._
 import sbt._
-import sbtrelease.ReleasePlugin.autoImport._
+import sbtrelease.ReleasePlugin.autoImport.{releasePublishArtifactsAction, _}
 import sbtrelease.ReleaseStateTransformations._
 
 object Common {
@@ -24,15 +24,7 @@ object Common {
     "-Yrangepos"
   )
 
-  autoScalaLibrary := false
-
   fork in run := true
-
-  releaseVersionBump := sbtrelease.Version.Bump.Next
-
-  releaseIgnoreUntrackedFiles := true
-
-  releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
   val tagName = Def.setting {
     s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
@@ -43,7 +35,6 @@ object Common {
     else
       tagName.value
   }
-
 
   val settings = Seq(
     organization := "com.github.mideo",
@@ -103,6 +94,12 @@ object Common {
       "oss.sonatype.org", oss_user, oss_pass),
 
     pgpPassphrase := Some(gpg_pass),
+
+    releaseVersionBump := sbtrelease.Version.Bump.Next,
+
+    releaseIgnoreUntrackedFiles := true,
+
+    releasePublishArtifactsAction := PgpKeys.publishSigned.value,
 
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
