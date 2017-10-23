@@ -26,7 +26,7 @@ object Dependencies {
     "com.github.tomakehurst" % "wiremock" % "2.8.0",
     "com.novocode" % "junit-interface" % "0.10" % "test",
     "junit" % "junit" % "4.12",
-    "org.hamcrest" % "hamcrest-junit" % "2.0.0.0",
+    "org.hamcrest" % "hamcrest-junit" % "2.0.0.0"  exclude ("org.hamcrest", "java-hamcrest"),
     "org.scalatest" % "scalatest_2.11" % "3.0.3" % "test",
     "org.pegdown" % "pegdown" % "1.6.0" % "test",
     "org.mockito" % "mockito-all" % "1.9.5" % "test"

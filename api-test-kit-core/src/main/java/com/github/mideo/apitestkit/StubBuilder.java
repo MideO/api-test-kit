@@ -14,8 +14,8 @@ public class StubBuilder {
 
     public StubBuilder() {
         ApiTestKitProperties properties = ApiTestKitProperties.create();
-        int WIREMOCK_PORT = properties.getInt("wiremock.port");
-        String WIREMOCK_HOST = properties.getString("wiremock.host");
+        int WIREMOCK_PORT = properties.getInt("wiremock.port", 9999);
+        String WIREMOCK_HOST = properties.getString("wiremock.host", "localhost");
         String WIREMOCK_ROOT_DIRECTORY = properties.getString("wiremock.root.directory", "src/test/resources");
         options = wireMockConfig().port(WIREMOCK_PORT).bindAddress(WIREMOCK_HOST).withRootDirectory(WIREMOCK_ROOT_DIRECTORY);
     }

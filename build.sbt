@@ -30,9 +30,14 @@ lazy val apiTestKitApi = (project in file("api-test-kit-api"))
   .settings(Common.settings: _*)
   .dependsOn(apiTestKitCore)
 
+lazy val apiTestKitPerformance = (project in file("api-test-kit-performance"))
+  .settings(Common.settings: _*)
+  .dependsOn(apiTestKitCore)
+  .settings(libraryDependencies ++= Dependencies.Gatling)
+
 lazy val `apitestkit` = (project in file("."))
-  .aggregate(apiTestKitApi, apiTestKitCore, apiTestKitMonitoring)
-  .dependsOn(apiTestKitApi, apiTestKitCore, apiTestKitMonitoring)
+  .aggregate(apiTestKitApi, apiTestKitCore, apiTestKitMonitoring, apiTestKitPerformance)
+  .dependsOn(apiTestKitApi, apiTestKitCore, apiTestKitMonitoring, apiTestKitPerformance)
   .settings(Common.settings: _*)
   .settings(libraryDependencies ++= Dependencies.Atam ++ Dependencies.Gatling ++ Dependencies.Core ++ Dependencies.RestAssured)
 
