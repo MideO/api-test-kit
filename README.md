@@ -5,7 +5,9 @@
 ### Modules
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mideo/api-test-kit_2.11/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.mideo%22%20a%3A%22api-test-kit_2.11%22) api-test-kit
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mideo/api-test-kit-api_2.11/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.mideo%22%20a%3A%22api-test-kit-api_2.11%22) api-test-kit-api 	  
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mideo/api-test-kit-api_2.11/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.mideo%22%20a%3A%22api-test-kit-api_2.11%22) api-test-kit-api
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mideo/api-test-kit-performance_2.11/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.mideo%22%20a%3A%22api-test-kit-performance_2.11%22) api-test-kit-performance 	  
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mideo/api-test-kit-core_2.11/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.mideo%22%20a%3A%22api-test-kit-core_2.11%22) api-test-kit-core 	  
 
