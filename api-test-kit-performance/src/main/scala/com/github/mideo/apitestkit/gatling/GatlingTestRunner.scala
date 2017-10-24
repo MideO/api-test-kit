@@ -1,11 +1,9 @@
-package com.github.mideo.apitestkit
+package com.github.mideo.apitestkit.gatling
 
 import io.gatling.app.Gatling
 import io.gatling.core.config.GatlingPropertiesBuilder
 
-package object gatling {
-
-  object GatlingTestRunner {
+object GatlingTestRunner {
     private lazy val props = new GatlingPropertiesBuilder
 
     def forSimulationClass(s: String): this.type = {
@@ -26,5 +24,4 @@ package object gatling {
     def run: Int = {
       Gatling.fromMap(props.build)
     }
-  }
 }

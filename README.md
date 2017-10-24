@@ -185,7 +185,7 @@ class FakeLocalPerformanceTest
   extends LocalPerformanceTest{
   AsciiArt.draw("TestLibs")
   override val testScenarios: List[TestScenario] = List(FakeScenario)
-  override val simulations: List[PopulationBuilder] = loadWithFakeTokenUsers(testScenarios, injection)
+  override val simulations: List[PopulationBuilder] = testScenarios map { _.scenarioBuilder("test", "simulation").inject(injection) }
 
   override def injection: InjectionStep = atOnceUsers(1)
   doSetUp()
@@ -199,7 +199,7 @@ class FakeMockedPerformanceTest
   extends LocalPerformanceTest{
   AsciiArt.draw("TestLibs")
   override val testScenarios: List[TestScenario] = List(FakeScenario)
-  override val simulations: List[PopulationBuilder] = loadWithFakeTokenUsers(testScenarios, injection)
+  override val simulations: List[PopulationBuilder] = testScenarios map { _.scenarioBuilder("test", "simulation").inject(injection) }
   
   ScalaStubBuilder.givenWiremockWillReturnCode(200)
   
@@ -215,7 +215,7 @@ class FakePerformanceTest
   extends PerformanceTest{
   AsciiArt.draw("TestLibs")
   override val testScenarios: List[TestScenario] = List(FakeScenario)
-  override val simulations: List[PopulationBuilder] = loadWithFakeTokenUsers(testScenarios, injection)
+  override val simulations: List[PopulationBuilder] = testScenarios map { _.scenarioBuilder("test", "simulation").inject(injection) }
 
   override def injection: InjectionStep = atOnceUsers(1)
   doSetUp()

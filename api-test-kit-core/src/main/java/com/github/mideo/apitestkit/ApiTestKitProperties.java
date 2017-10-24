@@ -3,9 +3,10 @@ package com.github.mideo.apitestkit;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class ApiTestKitProperties {
-
+    private final Logger LOGGER = Logger.getLogger("ApiTestKitProperties");
     private Properties config = new Properties();
 
     private static ApiTestKitProperties INSTANCE;
@@ -30,8 +31,8 @@ public class ApiTestKitProperties {
     private void updateConfig(String propertyFileName) {
         try {
             config.load(getClass().getClassLoader().getResourceAsStream(propertyFileName));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (NullPointerException | IOException e) {
+            LOGGER.info("No properties file to load! using defaults");
         }
     }
 
