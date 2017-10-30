@@ -2,7 +2,9 @@ package com.github.mideo.apitestkit;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -20,24 +22,46 @@ public class StubBuilder {
         options = wireMockConfig().port(WIREMOCK_PORT).bindAddress(WIREMOCK_HOST).withRootDirectory(WIREMOCK_ROOT_DIRECTORY);
     }
 
+
     public WireMockServer getWireMockServer() {
         return wireMockServer;
     }
 
     public StubBuilder disableRequestJournal() {
         options.disableRequestJournal();
-        wireMockServer = new WireMockServer(options);
         return this;
     }
 
+    public StubBuilder enableResponseTemplateTransformerForAllResponse() {
+        options.extensions(new ResponseTemplateTransformer(true));
+        return this;
+    }
+
+    public StubBuilder enableResponseTemplateTransformer() {
+        options.extensions(new ResponseTemplateTransformer(false));
+        return this;
+    }
+
+    public WireMockConfiguration getOptions(){
+        return options;
+    }
+
     public StubBuilder startWireMock() {
+      return startWireMock(options);
+    }
+
+    public StubBuilder startWireMock(WireMockConfiguration opt) {
         if (wireMockIsRunning()) return this;
-        wireMockServer = new WireMockServer(options);
+        wireMockServer = new WireMockServer(opt);
         wireMockServer.start();
         Runtime.getRuntime().addShutdownHook(new Thread(wireMockServer::shutdownServer));
         return this;
     }
 
+    public StubBuilder shutdownWireMock(WireMockConfiguration opt) {
+        if (wireMockIsRunning()) wireMockServer.shutdownServer();
+        return this;
+    }
 
     boolean wireMockIsRunning(){
         return wireMockServer != null && wireMockServer.isRunning();
@@ -51,6 +75,12 @@ public class StubBuilder {
         );
         return this;
     }
+
+    public StubBuilder givenWiremockServerResponse(MappingBuilder mapping, ResponseDefinitionBuilder responseDefinitionBuilder) {
+        wireMockServer.stubFor(mapping.willReturn(responseDefinitionBuilder));
+        return this;
+    }
+
 
     public StubBuilder givenWiremockServerResponse(MappingBuilder mapping, String jsonResponse) {
         givenWiremockServerResponse(mapping, jsonResponse, 200);

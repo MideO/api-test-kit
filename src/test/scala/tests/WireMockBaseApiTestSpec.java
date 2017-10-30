@@ -5,6 +5,8 @@ import com.github.mideo.apitestkit.*;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.google.common.collect.ImmutableMap;
+import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
 import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -90,6 +92,21 @@ public class WireMockBaseApiTestSpec extends JUnitSuite {
                 .get("/api").then()
                 .statusCode(200)
                 .body(Matchers.is(payload));
+    }
+
+    @Test
+    public void givenWiremockServerResponseWithPathAndRequestAndBody_ShouldSetWireMockMappingWithResponseTemplate() throws Exception {
+        //When
+        RestAssured.defaultParser = Parser.JSON;
+        fugazziWireMockBasedApiTest.getStubBuilder().givenWiremockServerResponse(post("/api"),aResponse()
+                .withBody("{{request.body}}")
+                .withTransformers("response-template"));
+
+        //Then
+        requestSpecification.when().body("hello")
+                .post("/api").then().log().everything()
+                .statusCode(200)
+                .body(Matchers.is("hello"));
     }
 
 

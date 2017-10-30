@@ -10,7 +10,7 @@ public abstract class WireMockBasedApiTest extends ApiTest {
     @Before
     public void setupWireMock() {
         setupApi();
-        stubBuilder.startWireMock();
+        stubBuilder.enableResponseTemplateTransformer().startWireMock();
         WireMockServer mockServer = stubBuilder.getWireMockServer();
         mockServer.resetMappings();
         mockServer.resetRequests();
