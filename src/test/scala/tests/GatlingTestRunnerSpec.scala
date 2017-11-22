@@ -11,15 +11,15 @@ import io.gatling.http.protocol.HttpProtocol
 
 
 object FakeScenario extends TestScenario {
-  override def scenarioBuilder(business: String, userName: String): ScenarioBuilder = {
-    scenario(s"Fake Scenario $business")
+  override def scenarioBuilder(arg: String*): ScenarioBuilder = {
+    scenario(s"Fake Scenario $arg")
       .exec(http("fake request").get("/"))
   }
 }
 
 object AnotherFakeScenario extends TestScenario {
-  override def scenarioBuilder(business: String, userName: String): ScenarioBuilder = {
-    scenario(s"Another Fake Scenario $business")
+  override def scenarioBuilder(arg: String*): ScenarioBuilder = {
+    scenario(s"Another Fake Scenario $arg")
       .exec(http("Another fake request").get("/"))
   }
 }
