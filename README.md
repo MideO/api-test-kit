@@ -134,7 +134,6 @@ class ExampleWiremockBasedApiTest extends WireMockBasedApiTest {
  public class Example {
           public static void main(String[] args) throws Exception {
               StubBuilder stubServer = new StubBuilder().startWireMock();
-              stubServer.startWireMock();
               
               //stubbing
               stubServer.givenWiremockWillReturnCode(200);
