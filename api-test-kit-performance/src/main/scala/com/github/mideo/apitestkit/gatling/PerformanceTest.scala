@@ -13,7 +13,7 @@ import scala.util.Random
 
 
 trait TestScenario {
-  def scenarioBuilder(scenarioName: String, httpRequestName: String): ScenarioBuilder
+  def scenarioBuilder(scenarioName: String*): ScenarioBuilder
 }
 
 
